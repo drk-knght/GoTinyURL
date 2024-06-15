@@ -1,42 +1,76 @@
-# url-shortner-go
+# GoTinyURL
 
-### Backend
+GoTinyURL is a URL shortening service that allows users to create short URLs from long ones and manage their links efficiently.
 
-1. Redis for Caching : redis-server
-2. PostgresSQL for storing URL mappings
+## Table of Contents
+- [Features](#features)
+- [Backend](#backend)
+- [Client](#client)
+- [API Endpoints](#api-endpoints)
+- [Setup](#setup)
+- [Usage](#usage)
+- [Contributing](#contributing)
 
-### Client
+## Features
+- Generate short URLs from long URLs
+- Store URL mappings in PostgreSQL
+- Cache URL mappings in Redis
+- SwiftUI client app with local storage using CoreData
+- View past shortened links on the client
 
-1. SwiftUI for the app
-2. CoreData to store url mappings locally on client side
+## Backend
+1. **Redis**: Used for caching URL mappings.
+2. **PostgreSQL**: Used for storing URL mappings persistently.
 
-### API Endpoints
+## Client
+1. **SwiftUI**: Used for building the iOS app.
+2. **CoreData**: Used for storing URL mappings locally on the client side.
 
-- #### `/create-short-url`, which is a `POST` request validates and creates a short url from long url and user id passed to it
+## API Endpoints
 
-```
-curl --location --request POST 'http://localhost:9098/create-short-url' \
---header 'Content-Type: text/plain' \
---data-raw '{
-    "long_url": "https://amazon.com",
-    "user_id" : "e0dba740-fc4b-497872c-d360239e"
-}
-'
-```
+### Create Short URL
+- **Endpoint**: `/create-short-url`
+- **Method**: `POST`
+- **Description**: Validates and creates a short URL from the provided long URL and user ID.
+- **Sample Request**:
+    ```sh
+    curl --location --request POST 'http://localhost:9098/create-short-url' \
+    --header 'Content-Type: text/plain' \
+    --data-raw '{
+        "long_url": "https://amazon.com",
+        "user_id" : "e0dba740-fc4b-497872c-d360239e"
+    }'
+    ```
+- **Sample Response** (200 Status Code):
+    ```json
+    {
+        "message": "Short URL created successfully",
+        "short_url": "http://localhost:9098/re/SwwSgzBe"
+    }
+    ```
 
-Sample Response (200 Status Code):
+### Redirect to Long URL
+- **Endpoint**: `/re/:shortUrl`
+- **Method**: `GET`
+- **Description**: Redirects to the original long URL based on the short URL mapping present in the database or cache.
 
-```
-{
-    "message": "short url created successfully",
-    "short_url": "http://localhost:9098/re/SwwSgzBe"
-}
-```
+## Setup
+1. Clone the repository:
+    ```sh
+    git clone https://github.com/drk-knght/GoTinyURL.git
+    cd GoTinyURL
+    ```
+2. Set up PostgreSQL and Redis servers.
+3. Update the configuration files with your database credentials.
+4. Run the backend server:
+    ```sh
+    go run main.go
+    ```
 
-- #### `/re/:shortUrl`, which is a `GET` request redirecting to the `shortUrl` mapping present in DB/Cache
+## Usage
+- Use the provided API endpoints to create and manage short URLs.
+- Use the SwiftUI client app to interact with the service and view your shortened URLs.
 
-#### Client Side
+## Contributing
+We welcome contributions! Please fork the repository and submit pull requests.
 
-User can generate the short links and also can view past links they have shortened
-
-#### References: [Building an URL shortener in Go](https://www.eddywm.com/lets-build-a-url-shortener-in-go-part-iv-forwarding/)
